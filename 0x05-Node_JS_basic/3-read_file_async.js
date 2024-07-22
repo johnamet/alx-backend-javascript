@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-export default async function countStudents(path) {
+async function countStudents(path) {
   try {
     const data = await fs.promises.readFile(path, 'utf8');
     const lines = data.split('\n').filter(Boolean); // Remove empty lines
@@ -41,3 +41,5 @@ export default async function countStudents(path) {
     console.error('Cannot load the database');
   }
 }
+
+module.exports = countStudents;

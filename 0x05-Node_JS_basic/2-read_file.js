@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-export default function countStudents(path) {
+function countStudents(path) {
   try {
     // Check if the file exists
     if (!fs.existsSync(path)) {
@@ -47,3 +47,5 @@ export default function countStudents(path) {
     console.error(err.message);
   }
 }
+
+module.exports = countStudents;
