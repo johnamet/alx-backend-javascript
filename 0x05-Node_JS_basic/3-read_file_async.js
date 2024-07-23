@@ -1,50 +1,26 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 
-function countStudents(path) {
-  return new Promise((resolve, reject) => {
-    fs.promises.readFile(path, 'utf8')
-      .then(data => {
-        const lines = data.split('\n').filter(Boolean); // Remove empty lines
+async function countStudents(path) {
+  try {
+    const data = await fs.readFile(path, 'utf8');
+    const lines = data.trim().split('\n');
+    const fields = {};
 
-        if (lines.length === 0) {
-          throw new Error('Cannot load the database');
-        }
+    lines.slice(1).forEach((line) => {
+      const [firstname, , , field] = line.split(',');
+      if (field) {
+        if (!fields[field]) fields[field] = [];
+        fields[field].push(firstname);
+      }
+    });
 
-        let isFirstLine = true;
-        let numStudents = 0;
-        let numCS = 0;
-        let numSWE = 0;
-        const csStudents = [];
-        const sweStudents = [];
-
-        lines.forEach(line => {
-          if (isFirstLine) {
-            isFirstLine = false; // Skip the first line (header)
-          } else {
-            const [firstname, , , field] = line.split(',');
-
-            if (field === 'CS') {
-              numCS += 1;
-              csStudents.push(firstname);
-            } else if (field === 'SWE') {
-              numSWE += 1;
-              sweStudents.push(firstname);
-            }
-
-            numStudents += 1;
-          }
-        });
-
-        let result = `Number of students: ${numStudents}\n`;
-        result += `Number of students in CS: ${numCS}. List: ${csStudents.join(', ')}\n`;
-        result += `Number of students in SWE: ${numSWE}. List: ${sweStudents.join(', ')}`;
-
-        resolve(result);
-      })
-      .catch(err => {
-        reject(new Error('Cannot load the database'));
-      });
-  });
+    console.log(`Number of students: ${lines.length - 1}`);
+    Object.keys(fields).forEach((field) => {
+      console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
+    });
+  } catch (error) {
+    throw new Error('Cannot load the database');
+  }
 }
 
 module.exports = countStudents;

@@ -1,30 +1,25 @@
-const { createServer } = require('node:http');
+const http = require('http');
+const url = require('url');
 const countStudents = require('./3-read_file_async');
 
-const app = createServer(async (req, res) => {
-  res.setHeader('Content-Type', 'text/plain');
+const app = http.createServer(async (req, res) => {
+  const parsedUrl = url.parse(req.url, true);
 
-  if (req.method === 'GET' && req.url === '/') {
+  if (parsedUrl.pathname === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('Hello Holberton School!');
-  } else if (req.method === 'GET' && req.url === '/students') {
+  } else if (parsedUrl.pathname === '/students') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.write('This is the list of our students\n');
     try {
-      const studentData = await countStudents('database.csv');
-      res.end(`This is the list of our students\n${studentData}`);
+      await countStudents(process.argv[2]);
     } catch (error) {
-      res.statusCode = 500;
-      res.end(error.message);
+      res.write(error.message);
     }
-  } else {
-    res.statusCode = 404;
-    res.end('Not Found');
+    res.end();
   }
 });
 
-const hostname = 'localhost';
-const port = 1245;
-
-app.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.listen(1245);
 
 module.exports = app;
