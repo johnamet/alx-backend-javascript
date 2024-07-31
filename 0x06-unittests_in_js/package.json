@@ -1,0 +1,20 @@
+{
+  "name": "0x06-unittests_in_js",
+  "version": "1.0.0",
+  "description": "ALX BACKEND JAVASCRIPT TESTS",
+  "main": "dev",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "John Ametepe Agboku",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^10.7.0"
+  },
+  "dependencies": {
+    "chai": "^5.1.1",
+    "express": "^4.19.2",
+    "sinon": "^18.0.0",
+    "supertest": "^7.0.0"
+  }
+}
